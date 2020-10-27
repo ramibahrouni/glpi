@@ -1,188 +1,114 @@
 <?php
 include('../inc/includes.php');
 
+global $CFG_GLPI;
 
+Session::checkLoginUser();
 Html::simpleHeader("Entités");
-//echo ($_SESSION['glpiactive_entity']);
-$entity = new Entity();
-$entity->getFromDB($_SESSION['glpiactive_entity']);
+echo "</br>";
+echo "</br>";
+if (Session::getCurrentInterface() == 'helpdesk') {
+    $actionurl = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?active_entity=";
+} else {
+    $actionurl = $CFG_GLPI["root_doc"] . "/front/central.php?active_entity=";
+}
 
-//echo ($entity);
-//echo $entity->getName();
-//echo Session::getCurrentInterface();
-//print_r($_SESSION);
+$iterator = $DB->request([
+    'SELECT' => [
+        'ent.id',
+        'ent.name',
+        'ent.sons_cache',
+        'COUNT' => 'sub_entities.id AS nb_subs'
+    ],
+    'FROM' => 'glpi_entities AS ent',
+    'LEFT JOIN' => [
+        'glpi_entities AS sub_entities' => [
+            'ON' => [
+                'sub_entities' => 'entities_id',
+                'ent' => 'id'
+            ]
+        ]
+    ],
+    'WHERE' => ['ent.entities_id' => 0],
+    'GROUPBY' => ['ent.id', 'ent.name', 'ent.sons_cache'],
+    'ORDERBY' => 'name'
+]);
+echo "<div class=\"container\">";
+echo "<div class=\"row\">";
+while ($row = $iterator->next()) {
+    $path = [
+        'id' => $row['id'],
+        'text' => $row['name']
+    ];
 
-//
-//echo '<h3>Hello</h3>';
-//Html::header($this->getTypeName(1), '', "admin", "entity");
-//global $CFG_GLPI;
-//
-///// Prefs / Logout link
-//echo "<div id='c_preference' >";
-//echo "<ul>";
-//
-//echo "<li id='deconnexion'>";
-//echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/logout.php";
-///// logout witout noAuto login for extauth
-//if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
-//    echo "?noAUTO=1";
+    if ($row['name'] === "IT"){
+        echo "<div class='col-md-2'>";
+        echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'><div class='card card-it'><h3>" . $row['name'] . "</h3>
+        </div>
+        </a>";
+        echo "</div>";
+    } elseif ($row['name'] === "DSM"){
+        echo "<div class='col-md-2'>";
+        echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'><div class='card card-dsm'><h3>" . $row['name'] . "</h3>
+        </div>
+        </a>";
+        echo "</div>";
+    }elseif ($row['name'] === "Paie"){
+        echo "<div class='col-md-2'>";
+        echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'><div class='card card-paie'><h3>" . $row['name'] . "</h3>
+        </div>
+        </a>";
+        echo "</div>";
+    }elseif ($row['name'] === "HR") {
+        echo "<div class='col-md-2'>";
+        echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'><div class='card card-hr'><h3>" . $row['name'] . "</h3>
+        </div>
+        </a>";
+        echo "</div>";
+    }
+
+    else{
+        echo "<div class='col-md-2'>";
+        echo "<a style='text-decoration: none;border:0' href='$actionurl" . $row['id'] . "'><div class='card card-1'><h3>" . $row['name'] . "</h3>
+     </div>
+    </a>";
+        echo "</div>";
+    }
+
+
+
+
+
+
+}
+echo "</div>";
+echo "</div>";
+echo "</br>";
+echo "<link rel='stylesheet' href='../css/Cards.css' type='text/css' media='screen'>";
+echo "<link rel='stylesheet' href='../css/bootstrap.css' type='text/css' media='screen'>";
+echo "<link href=\"https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,900\" rel=\"stylesheet\">";
+
+
+
+
+//print_r($_SESSION["glpiactive_entity"]);
+//print_r($_SESSION['glpiactive_entity']);
+//print_r(getSonsOf('glpi_entities', '2'));
+//// Root node
+////print_r($_SESSION['glpiactiveprofile']['entities']);
+//if ($_SESSION['glpiactiveprofile']['entities'] != 0) {
 //}
-//echo "' title=\"" . __s('Logout') . "\" class='fa fa-sign-out-alt'>";
-//// check user id : header used for display messages when session logout
-//echo "<span class='sr-only'>" . __s('Logout') . "></span>";
-//echo "</a>";
-//echo "</li>\n";
-//
-//$username = '';
-//$title = __s('My settings');
-//if (Session::getLoginUserID()) {
-//    $username = formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-//        $_SESSION["glpifirstname"], 0, 20);
-//    $title = sprintf(
-//        __s('%1$s - %2$s'),
-//        __s('My settings'),
-//        $username
-//    );
-//}
-//echo "<li id='preferences_link'><a href='" . $CFG_GLPI["root_doc"] . "/front/preference.php' title=\"" .
-//    $title . "\" class='fa fa-cog'>";
-//echo "<span class='sr-only'>" . __s('My settings') . "</span>";
-//
-//// check user id : header used for display messages when session logout
-//if (Session::getLoginUserID()) {
-//    echo "<span id='myname'>{$username}</span>";
-//}
-//echo "</a></li>";
-////class Ent
-////{
-////
-////    function displayHeader() {
-////        Html::header($this->getTypeName(1), '', "admin", "entity");
-////    }
-////
-////    private static function displayTopMenu($full)
-////    {
-////    global $CFG_GLPI;
-////
-////    /// Prefs / Logout link
-////    echo "<div id='c_preference' >";
-////    echo "<ul>";
-////
-////    echo "<li id='deconnexion'>";
-////    echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/logout.php";
-////    /// logout witout noAuto login for extauth
-////    if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
-////        echo "?noAUTO=1";
-////    }
-////    echo "' title=\"" . __s('Logout') . "\" class='fa fa-sign-out-alt'>";
-////    // check user id : header used for display messages when session logout
-////    echo "<span class='sr-only'>" . __s('Logout') . "></span>";
-////    echo "</a>";
-////    echo "</li>\n";
-////
-////    $username = '';
-////    $title = __s('My settings');
-////    if (Session::getLoginUserID()) {
-////        $username = formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
-////            $_SESSION["glpifirstname"], 0, 20);
-////        $title = sprintf(
-////            __s('%1$s - %2$s'),
-////            __s('My settings'),
-////            $username
-////        );
-////    }
-////    echo "<li id='preferences_link'><a href='" . $CFG_GLPI["root_doc"] . "/front/preference.php' title=\"" .
-////        $title . "\" class='fa fa-cog'>";
-////    echo "<span class='sr-only'>" . __s('My settings') . "</span>";
-////
-////    // check user id : header used for display messages when session logout
-////    if (Session::getLoginUserID()) {
-////        echo "<span id='myname'>{$username}</span>";
-////    }
-////    echo "</a></li>";
-////
-////    if (Config::canUpdate()) {
-////        $is_debug_active = $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
-////        $class = 'debug' . ($is_debug_active ? 'on' : 'off');
-////        $title = sprintf(
-////            __s('%1$s - %2$s'),
-////            __s('Change mode'),
-////            $is_debug_active ? __s('Debug mode enabled') : __s('Debug mode disabled')
-////        );
-////        echo "<li id='debug_mode'>";
-////        echo "<a href='{$CFG_GLPI['root_doc']}/ajax/switchdebug.php' class='fa fa-bug $class'
-////                title='$title'>";
-////        echo "<span class='sr-only'>" . __s('Change mode') . "</span>";
-////        echo "</a>";
-////        echo "</li>";
-////    }
-////
-////    /// Bookmark load
-////    echo "<li id='bookmark_link'>";
-////    Ajax::createSlidePanel(
-////        'showSavedSearches',
-////        [
-////            'title' => __('Saved searches'),
-////            'url' => $CFG_GLPI['root_doc'] . '/ajax/savedsearch.php?action=show',
-////            'icon' => '/pics/menu_config.png',
-////            'icon_url' => SavedSearch::getSearchURL(),
-////            'icon_txt' => __('Manage saved searches')
-////        ]
-////    );
-////    echo "<a href='#' id='showSavedSearchesLink' class='fa fa-star' title=\"" .
-////        __s('Load a saved search') . "\">";
-////    echo "<span class='sr-only'>" . __('Saved searches') . "</span>";
-////    echo "</a></li>";
-////
-////    if (Session::getCurrentInterface() == 'central') {
-////        $url_help_link = (empty($CFG_GLPI["central_doc_url"])
-////            ? "http://glpi-project.org/help-central"
-////            : $CFG_GLPI["central_doc_url"]);
-////    } else {
-////        $url_help_link = (empty($CFG_GLPI["helpdesk_doc_url"])
-////            ? "http://glpi-project.org/help-central"
-////            : $CFG_GLPI["helpdesk_doc_url"]);
-////    }
-////
-////    echo "<li id='help_link'>" .
-////        "<a href='" . $url_help_link . "' target='_blank' title=\"" .
-////        __s('Help') . "\" class='fa fa-question'>" .
-////        "<span class='sr-only'>" . __('Help') . "</span>";
-////    echo "</a></li>";
-////
-////    if (!GLPI_DEMO_MODE) {
-////        echo "<li id='language_link'><a href='" . $CFG_GLPI["root_doc"] .
-////            "/front/preference.php?forcetab=User\$1' title=\"" .
-////            addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage'])) . "\">" .
-////            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</a></li>";
-////    } else {
-////        echo "<li id='language_link'><span>" .
-////            Dropdown::getLanguageName($_SESSION['glpilanguage']) . "</span></li>";
-////    }
-////
-////    echo "<li id='c_recherche'>\n";
-////    if ($full === true) {
-////        /// Search engine
-////        if ($CFG_GLPI['allow_search_global']) {
-////            echo "<form role='search' method='get' action='" . $CFG_GLPI["root_doc"] . "/front/search.php'>\n";
-////            echo "<span id='champRecherche'>";
-////            echo "<input size='15' type='search' name='globalsearch' placeholder='" . __s('Search') . "' aria-labelledby='globalsearchglass'>";
-////            echo "<button type='submit' name='globalsearchglass' id='globalsearchglass'>";
-////            echo "<i class='fa fa-search'></i><span class='sr-only'>" . __s('Search') . "</span>";
-////            echo "</button>";
-////            echo "</span>";
-////            Html::closeForm();
-////        }
-////    }
-////    echo "</li>";
-////
-////    echo "</ul>";
-////    echo "</div>\n";
-////
-////
-////    }
-////
-////
-////
-////}
+
+//$entity = new Entity();
+//$entity->getFromDB($_SESSION['glpiactive_entity']);
+//print_r ($_GET['node']);
+//print_r(getSonsOf('glpi_entities',$_SESSION['glpiactive_entity']));
+//print_r( $_SESSION['glpiactiveprofile']['entities']);
+//print_r($_SESSION['glpiactive_entity_shortname']);
+//echo(Session::changeActiveEntities());
+//echo(Session::changeActiveEntities());
+//echo Session::getLoginUserID();
+echo "</br>";
+echo "</br>";
 Html::footer();
+

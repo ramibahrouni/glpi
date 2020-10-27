@@ -1813,145 +1813,146 @@ class Toolbox
     {
         global $CFG_GLPI;
 
-//        if (!empty($where)) {
-//
-//            if (Session::getCurrentInterface()) {
+        if (!empty($where)) {
+
+            if (Session::getCurrentInterface()) {
                 // redirect to URL : URL must be rawurlencoded
                 $decoded_where = rawurldecode($where);
                 $matches = [];
 
-                // redirect to full url -> check if it's based on glpi url
-//                if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
-//                    if ($matches[1] !== $CFG_GLPI['url_base']) {
+             //    redirect to full url -> check if it's based on glpi url
+                if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $decoded_where, $matches)) {
+                    if ($matches[1] !== $CFG_GLPI['url_base']) {
                         Session::addMessageAfterRedirect('Redirection failed');
                         Html::redirect($CFG_GLPI["root_doc"] . "/front/ent-dep.php");
-//                        if (Session::getCurrentInterface() === "helpdesk") {
-//                            Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
-//                        } else {
-//                            Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-//                        }
-//                    } else {
-//                        Html::redirect($decoded_where);
-//                    }
-                //}
+                        if (Session::getCurrentInterface() === "helpdesk") {
+                            Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                        } else {
+                            Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+                        }
+                    } else {
+                        Html::redirect($decoded_where);
+                    }
+                }
 
-//                // Redirect to relative url -> redirect with glpi url to prevent exploits
-//                if ($decoded_where[0] == '/') {
-//                    $redirect_to = $CFG_GLPI["url_base"] . $decoded_where;
-//                    //echo $redirect_to; exit();
-//                    Html::redirect($redirect_to);
-//                }
-//
-//                $data = explode("_", $where);
-//                $forcetab = '';
-//                // forcetab for simple items
-//                if (isset($data[2])) {
-//                    $forcetab = 'forcetab=' . $data[2];
-//                }
-//
-//                switch (Session::getCurrentInterface()) {
-//                    case "helpdesk" :
-//                        switch (strtolower($data[0])) {
-//                            // Use for compatibility with old name
-//                            case "tracking" :
-//                            case "ticket" :
-//                                $data[0] = 'Ticket';
-//                                // redirect to item
-//                                if (isset($data[1])
-//                                    && is_numeric($data[1])
-//                                    && ($data[1] > 0)) {
-//                                    // Check entity
-//                                    if (($item = getItemForItemtype($data[0]))
-//                                        && $item->isEntityAssign()) {
-//                                        if ($item->getFromDB($data[1])) {
-//                                            if (!Session::haveAccessToEntity($item->getEntityID())) {
-//                                                Session::changeActiveEntities($item->getEntityID(), 1);
-//                                            }
-//                                        }
-//                                    }
-//                                    // force redirect to timeline when timeline is enabled and viewing
-//                                    // Tasks or Followups
-//                                    $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
-//                                    $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
-//                                    $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
-//                                    Html::redirect(Ticket::getFormURLWithID($data[1]) . "&$forcetab");
-//
-//                                } else if (!empty($data[0])) { // redirect to list
-//                                    if ($item = getItemForItemtype($data[0])) {
-//                                        $searchUrl = $item->getSearchURL();
-//                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
-//                                        $searchUrl .= $forcetab;
-//                                        Html::redirect($searchUrl);
-//                                    }
-//                                }
-//
-//                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
-//                                break;
-//
-//                            case "preference" :
-//                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-//                                break;
-//
-//                            case "reservation" :
-//                                Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
-//                                break;
-//
-//                            default :
-//                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
-//                                break;
-//                        }
-//                        break;
-//
-//                    case "central" :
-//                        switch (strtolower($data[0])) {
-//                            case "preference" :
-//                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
-//                                break;
-//
-//                            // Use for compatibility with old name
-//                            // no break
-//                            case "tracking" :
-//                                $data[0] = "Ticket";
-//
-//                            default :
-//                                // redirect to item
-//                                if (!empty($data[0])
-//                                    && isset($data[1])
-//                                    && is_numeric($data[1])
-//                                    && ($data[1] > 0)) {
-//                                    // Check entity
-//                                    if ($item = getItemForItemtype($data[0])) {
-//                                        if ($item->isEntityAssign()) {
-//                                            if ($item->getFromDB($data[1])) {
-//                                                if (!Session::haveAccessToEntity($item->getEntityID())) {
-//                                                    Session::changeActiveEntities($item->getEntityID(), 1);
-//                                                }
-//                                            }
-//                                        }
-//                                        // force redirect to timeline when timeline is enabled
-//                                        $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
-//                                        $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
-//                                        $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
-//                                        Html::redirect($item->getFormURLWithID($data[1]) . "&$forcetab");
-//                                    }
-//
-//                                } else if (!empty($data[0])) { // redirect to list
-//                                    if ($item = getItemForItemtype($data[0])) {
-//                                        $searchUrl = $item->getSearchURL();
-//                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
-//                                        $searchUrl .= $forcetab;
-//                                        Html::redirect($searchUrl);
-//                                    }
-//                                }
-//
-//                                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
-//                                break;
-//                        }
-//                        break;
-//                }
-//            }
-        //}
+                // Redirect to relative url -> redirect with glpi url to prevent exploits
+                if ($decoded_where[0] == '/') {
+                    $redirect_to = $CFG_GLPI["url_base"] . $decoded_where;
+                    //echo $redirect_to; exit();
+                    Html::redirect($redirect_to);
+                }
+
+                $data = explode("_", $where);
+                $forcetab = '';
+                // forcetab for simple items
+                if (isset($data[2])) {
+                    $forcetab = 'forcetab=' . $data[2];
+                }
+
+                switch (Session::getCurrentInterface()) {
+                    case "helpdesk" :
+                        switch (strtolower($data[0])) {
+                            // Use for compatibility with old name
+                            case "tracking" :
+                            case "ticket" :
+                                $data[0] = 'Ticket';
+                                // redirect to item
+                                if (isset($data[1])
+                                    && is_numeric($data[1])
+                                    && ($data[1] > 0)) {
+                                    // Check entity
+                                    if (($item = getItemForItemtype($data[0]))
+                                        && $item->isEntityAssign()) {
+                                        if ($item->getFromDB($data[1])) {
+                                            if (!Session::haveAccessToEntity($item->getEntityID())) {
+                                                Session::changeActiveEntities($item->getEntityID(), 1);
+                                            }
+                                        }
+                                    }
+                                    // force redirect to timeline when timeline is enabled and viewing
+                                    // Tasks or Followups
+                                    $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
+                                    $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
+                                    $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
+                                    Html::redirect(Ticket::getFormURLWithID($data[1]) . "&$forcetab");
+
+                                } else if (!empty($data[0])) { // redirect to list
+                                    if ($item = getItemForItemtype($data[0])) {
+                                        $searchUrl = $item->getSearchURL();
+                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                                        $searchUrl .= $forcetab;
+                                        Html::redirect($searchUrl);
+                                    }
+                                }
+
+                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                                break;
+
+                            case "preference" :
+                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
+                                break;
+
+                            case "reservation" :
+                                Html::redirect(Reservation::getFormURLWithID($data[1]) . "&$forcetab");
+                                break;
+
+                            default :
+                                Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
+                                break;
+                        }
+                        break;
+
+                    case "central" :
+                        switch (strtolower($data[0])) {
+                            case "preference" :
+                                Html::redirect($CFG_GLPI["root_doc"] . "/front/preference.php?$forcetab");
+                                break;
+
+                            // Use for compatibility with old name
+                            // no break
+                            case "tracking" :
+                                $data[0] = "Ticket";
+
+                            default :
+                                // redirect to item
+                                if (!empty($data[0])
+                                    && isset($data[1])
+                                    && is_numeric($data[1])
+                                    && ($data[1] > 0)) {
+                                    // Check entity
+                                    if ($item = getItemForItemtype($data[0])) {
+                                        if ($item->isEntityAssign()) {
+                                            if ($item->getFromDB($data[1])) {
+                                                if (!Session::haveAccessToEntity($item->getEntityID())) {
+                                                    Session::changeActiveEntities($item->getEntityID(), 1);
+                                                }
+                                            }
+                                        }
+                                        // force redirect to timeline when timeline is enabled
+                                        $forcetab = str_replace('TicketFollowup$1', 'Ticket$1', $forcetab);
+                                        $forcetab = str_replace('TicketTask$1', 'Ticket$1', $forcetab);
+                                        $forcetab = str_replace('ITILFollowup$1', 'Ticket$1', $forcetab);
+                                        Html::redirect($item->getFormURLWithID($data[1]) . "&$forcetab");
+                                    }
+
+                                } else if (!empty($data[0])) { // redirect to list
+                                    if ($item = getItemForItemtype($data[0])) {
+                                        $searchUrl = $item->getSearchURL();
+                                        $searchUrl .= strpos($searchUrl, '?') === false ? '?' : '&';
+                                        $searchUrl .= $forcetab;
+                                        Html::redirect($searchUrl);
+                                    }
+                                }
+
+                                Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
     }
+
 
     /**
      * Manage planning posted datas (must have begin + duration or end)
