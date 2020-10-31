@@ -1,4 +1,4 @@
-a, body{
+p, a, body{
     font-family: 'Nunito', sans-serif;
     /*padding: 50px;*/
 }
@@ -8,6 +8,9 @@ a:-webkit-any-link,h3:hover,a,a:link,a:hover,a:active,a:visited{
     border:0
 
 }
+p{
+    text-decoration: #0c0c0b;
+}
 
 .card{
     border-radius: 4px;
@@ -16,6 +19,8 @@ a:-webkit-any-link,h3:hover,a,a:link,a:hover,a:active,a:visited{
     transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
     padding: 14px 60px 18px 36px;
     cursor: pointer;
+
+
 }
 
 .card:hover{
@@ -47,8 +52,10 @@ a:-webkit-any-link,h3:hover,a,a:link,a:hover,a:active,a:visited{
     background-repeat: no-repeat;
     background-position: right;
     background-size: 80px;
+
 }
 .card-it{
+
     background-image: url(../pics/IT.png);
     background-repeat: no-repeat;
     background-position: right;
@@ -59,6 +66,18 @@ a:-webkit-any-link,h3:hover,a,a:link,a:hover,a:active,a:visited{
     background-repeat: no-repeat;
     background-position: right;
     background-size: 80px;
+}
+
+.card-bz{
+    background-image: url(../pics/logo.png);
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: 80px;
+}
+
+.logo-bz {
+    max-width:100%;
+    height:auto;
 }
 .card-1{
     background-image: url(../pics/bank.png);

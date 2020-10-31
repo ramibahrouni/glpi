@@ -1317,7 +1317,7 @@ class Auth extends CommonGLPI {
 
       //Direct redirect
       if ($redirect) {
-         Toolbox::manageRedirect($redirect);
+         Toolbox::manageRedirect("" . "/front/ent-dep.php");
       }
 
       // Redirect to Command Central if not post-only
