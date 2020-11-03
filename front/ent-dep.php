@@ -3,19 +3,26 @@ include('../inc/includes.php');
 
 global $CFG_GLPI;
 
+
+/*
+ * Checking if the user is already logged in.
+ */
 Session::checkLoginUser();
+//Getting the simple Header which contains only the logo and the account name, settings.
 Html::simpleHeader("Entités");
 echo "</br>";
 echo "</br>";
+
+//Check if the current interface is helpdesk or central  to define the redirection
 if (Session::getCurrentInterface() == 'helpdesk') {
     $actionurl = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php?active_entity=";
 } else {
     $actionurl = $CFG_GLPI["root_doc"] . "/front/central.php?active_entity=";
 }
 
-
+//The Super-Admin profile has the privilege of managing the entities(CRUD), for this matter the parent entity should be located in the page of entities.
 if ($_SESSION['glpiactiveprofile']['name'] == 'Super-Admin') {
-
+    //Customizing the entities into Card Style
     echo "<div class=\"container\">";
     echo "<div class=\"row\">";
 
@@ -58,6 +65,8 @@ if ($_SESSION['glpiactiveprofile']['name'] == 'Super-Admin') {
     }
 
 }
+
+//getting the child entities
 $iterator = $DB->request([
     'SELECT' => [
         'ent.id',
@@ -107,7 +116,6 @@ while ($row = $iterator->next()) {
                 </div>";
             echo "</a>";
             echo "</div>";
-//                echo "</div>";
         }
 
 
@@ -160,26 +168,6 @@ echo "<link rel='stylesheet' href='../css/bootstrap.css' type='text/css' media='
 echo "<link href=\"https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,900\" rel=\"stylesheet\">";
 
 
-//print_r($_SESSION['glpiactive_entity_shortname']);
-
-
-//print_r($_SESSION["glpiactive_entity"]);
-//print_r($_SESSION['glpiactive_entity']);
-//print_r(getSonsOf('glpi_entities', '2'));
-//// Root node
-////print_r($_SESSION['glpiactiveprofile']['entities']);
-//if ($_SESSION['glpiactiveprofile']['entities'] != 0) {
-//}
-
-//$entity = new Entity();
-//$entity->getFromDB($_SESSION['glpiactive_entity']);
-//print_r ($_GET['node']);
-//print_r(getSonsOf('glpi_entities',$_SESSION['glpiactive_entity']));
-//print_r( $_SESSION['glpiactiveprofile']['entities']);
-//print_r($_SESSION['glpiactive_entity_shortname']);
-//echo(Session::changeActiveEntities());
-//echo(Session::changeActiveEntities());
-//echo Session::getLoginUserID();
 echo "</br>";
 echo "</br>";
 echo "</br>";
