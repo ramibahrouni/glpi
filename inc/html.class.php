@@ -3627,7 +3627,7 @@ JS;
             Html::closeForm();
             echo '</li>';
         }
-
+        //Changing the structure of showing entities
         if (Session::isMultiEntitiesMode()) {
             $actionurl = $CFG_GLPI['root_doc'] . "/front/ent-dep.php";
             echo "<li class='profile-selector'>";
