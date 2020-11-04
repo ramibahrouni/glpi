@@ -27,7 +27,6 @@ if ($_SESSION['glpiactiveprofile']['name'] == 'Super-Admin') {
     echo "<div class=\"row\">";
 
 
-
     if ($_SESSION['glpiactive_entity_shortname'] === 'Entité racine' || $_SESSION['glpiactive_entity_shortname'] === 'Entité racine (Arborescence)') {
         echo "<div class='col-md-4'>";
         echo "<a style='text-decoration: none;border:0)' href='$actionurl" . "all" . "'>";
@@ -90,76 +89,63 @@ $iterator = $DB->request([
 echo "<div class=\"container\">";
 echo "<div class=\"row\">";
 while ($row = $iterator->next()) {
-
     $path = [
         'id' => $row['id'],
         'text' => $row['name']
     ];
 
-    if ($_SESSION['glpiactive_entity_shortname'] === 'IT') {
-        if ($row['name'] === 'IT') {
-            echo "<div class='col-md-4'>";
-            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
-            echo "<div id= 'card' class='card card-it' style='box-shadow: 0 6px 10px rgba(30, 130, 76, 1), 0 0 6px rgba(0,0,0,.05);transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);'>
-                <h3>" . $row['name'] . "</h3>
-                <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
-                </div>";
-            echo "</a>";
-            echo "</div>";
+    if ($_SESSION['glpiactive_entity_shortname'] === "Entité racine (Arborescence)") {
 
-        } elseif ($row['name'] === 'DSM') {
-            echo "<div class='col-md-4'>";
-            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
-            echo "<div id= 'card' class='card card-dsm'>
+        echo "<div class='col-md-4'>";
+        echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
+        echo "<div id=" . $row['name'] . " class='card card-bz'>
                 <h3>" . $row['name'] . "</h3>
                 <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
                 </div>";
-            echo "</a>";
-            echo "</div>";
-        }
+        echo "</a>";
+        echo "</div>";
 
-
-    } elseif ($_SESSION['glpiactive_entity_shortname'] === 'DSM') {
-        if ($row['name'] === 'IT') {
-            echo "<div class='col-md-4'>";
-            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
-            echo "<div id= 'card' class='card card-it'>
-                <h3>" . $row['name'] . "</h3>
-                <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
-                </div>";
-            echo "</a>";
-            echo "</div>";
-        } elseif ($row['name'] === 'DSM') {
-            echo "<div class='col-md-4'>";
-            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
-            echo "<div id= 'card' class='card card-dsm' style='box-shadow: 0 6px 10px rgba(30, 130, 76, 1), 0 0 6px rgba(0,0,0,.05);transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);'>
-                <h3>" . $row['name'] . "</h3>
-                <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
-                </div>";
-            echo "</a>";
-            echo "</div>";
-        }
 
     } else {
-        if ($row['name'] === "IT") {
+        if ($_SESSION['glpiactive_entity_shortname'] === $row['name']) {
             echo "<div class='col-md-4'>";
-            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'><div class='card card-it'><h3>" . $row['name'] . "</h3>
-        <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
-        </div>
-        </a>";
+            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
+            echo "<div id= 'card' class='card card-bz' style='box-shadow: 0 6px 10px rgba(30, 130, 76, 1), 0 0 6px rgba(0,0,0,.05);transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);'>
+                <h3>" . $row['name'] . "</h3>
+                <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
+                </div>";
+            echo "</a>";
             echo "</div>";
-        } elseif ($row['name'] === "DSM") {
+
+
+        } else {
             echo "<div class='col-md-4'>";
-            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'><div class='card card-dsm'><h3>" . $row['name'] . "</h3>
-        <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Is something Broken? We can help.Raise a request here.</p>
-        </div>
-        </a>";
+            echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
+            echo "<div id= 'card' class='card card-bz'>
+                <h3>" . $row['name'] . "</h3>
+                <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
+                </div>";
+            echo "</a>";
             echo "</div>";
         }
     }
-
-
+/*
+ * Overriding card icon for IT and DSM Entities
+ * */
+    echo "<script>
+var text = document.getElementById(\"" . $row['name'] . "\").children[0].innerHTML;
+if (text === \"IT\"){
+document.getElementById(\"" . $row['name'] . "\").classList.remove('card-bz');
+document.getElementById(\"" . $row['name'] . "\").className += \" card-it\";
+}else if(text === \"DSM\"){
+document.getElementById(\"" . $row['name'] . "\").classList.remove('card-bz');
+document.getElementById(\"" . $row['name'] . "\").className += \" card-dsm\";
 }
+console.log(text);
+
+</script>";
+}
+
 echo "</div>";
 echo "</div>";
 echo "</br>";
