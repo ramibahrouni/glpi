@@ -123,7 +123,7 @@ while ($row = $iterator->next()) {
             echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
             echo "<div id=" . $row['name'] . " class='card card-bz'>
                 <h3>" . $row['name'] . "</h3>
-                <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
+                <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need help? Raise a request here.</p>
                 </div>";
             echo "</a>";
             echo "</div>";
@@ -135,13 +135,17 @@ while ($row = $iterator->next()) {
     echo "<script>
 var text = document.getElementById(\"" . $row['name'] . "\").children[0].innerHTML;
 if (text === \"IT\"){
+
 document.getElementById(\"" . $row['name'] . "\").classList.remove('card-bz');
 document.getElementById(\"" . $row['name'] . "\").className += \" card-it\";
+document.getElementById(\"" . $row['name'] . "\").children[1].innerHTML = \"Need an IT service?We can help.Raise a request here.\";
+
+
 }else if(text === \"DSM\"){
 document.getElementById(\"" . $row['name'] . "\").classList.remove('card-bz');
 document.getElementById(\"" . $row['name'] . "\").className += \" card-dsm\";
+document.getElementById(\"" . $row['name'] . "\").children[1].innerHTML = \"Is something broken?We can help.Raise a request here.\";
 }
-console.log(text);
 
 </script>";
 }
