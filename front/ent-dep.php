@@ -110,7 +110,7 @@ while ($row = $iterator->next()) {
         if ($_SESSION['glpiactive_entity_shortname'] === $row['name']) {
             echo "<div class='col-md-4'>";
             echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
-            echo "<div id= 'card' class='card card-bz' style='box-shadow: 0 6px 10px rgba(30, 130, 76, 1), 0 0 6px rgba(0,0,0,.05);transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);'>
+            echo "<div id=" . $row['name'] . " class='card card-bz' style='box-shadow: 0 6px 10px rgba(30, 130, 76, 1), 0 0 6px rgba(0,0,0,.05);transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);'>
                 <h3>" . $row['name'] . "</h3>
                 <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
                 </div>";
@@ -121,7 +121,7 @@ while ($row = $iterator->next()) {
         } else {
             echo "<div class='col-md-4'>";
             echo "<a style='text-decoration: none;border:0)' href='$actionurl" . $row['id'] . "'>";
-            echo "<div id= 'card' class='card card-bz'>
+            echo "<div id=" . $row['name'] . " class='card card-bz'>
                 <h3>" . $row['name'] . "</h3>
                 <p style='font-family: 'Nunito', sans-serif; text-decoration: #0c0c0b;'>Need an IT service? Raise a request here.</p>
                 </div>";
